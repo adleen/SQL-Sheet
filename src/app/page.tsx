@@ -52,19 +52,25 @@ export default function Home() {
             throw new Error("Could not find a valid header row.");
         }
 
-        const fileDataRows = jsonData.slice(1).map(row => {
-          const rowData: Row = {};
-          fileHeaders.forEach((header, index) => {
-            rowData[header] = row[index] !== undefined ? row[index] : null;
+        const fileDataRows = jsonData.slice(1)
+          .filter(row => row.some(cell => cell !== null && cell !== undefined && String(cell).trim() !== ''))
+          .map(row => {
+            const rowData: Row = {};
+            fileHeaders.forEach((header, index) => {
+              rowData[header] = row[index] !== undefined ? row[index] : null;
+            });
+            return rowData;
           });
-          return rowData;
-        });
+
+        if (fileDataRows.length === 0) {
+          throw new Error("No data rows with content found in the file.");
+        }
 
         setHeaders(fileHeaders);
         setData(fileDataRows);
         toast({
             title: "File processed successfully!",
-            description: `Found ${fileDataRows.length} rows. You can now preview the data.`,
+            description: `Found ${fileDataRows.length} rows with data. You can now preview the data.`,
         });
 
       } catch (err) {
@@ -75,6 +81,8 @@ export default function Home() {
             description: message,
         });
         setFileName(null);
+        setData([]);
+        setHeaders([]);
       } finally {
         setLoading(false);
       }
