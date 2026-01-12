@@ -10,7 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ArrowDown } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ArrowDown, Maximize } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 type Row = Record<string, string | number | null | undefined>;
@@ -179,7 +180,28 @@ export default function Home() {
                       placeholder="e.g., users"
                     />
                   </div>
-                  <TablePreview headers={headers} data={data} />
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                        <p className="text-sm font-medium">Data Preview:</p>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                    <Maximize className="mr-2 h-4 w-4" />
+                                    Maximize
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-7xl h-[90vh] flex flex-col">
+                                <DialogHeader>
+                                    <DialogTitle>Maximized Data Preview</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex-1 min-h-0">
+                                  <TablePreview headers={headers} data={data} maximized />
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                    <TablePreview headers={headers} data={data} />
+                  </div>
                   <div className="flex justify-center pt-4">
                      <Button onClick={generateSql} size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
                         <ArrowDown className="mr-2 h-5 w-5" /> Generate SQL
