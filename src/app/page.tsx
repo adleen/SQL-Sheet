@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowDown, Maximize } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ArrowDown, Maximize, FileUp, Search, Code, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 
@@ -159,6 +160,32 @@ export default function Home() {
       <Header />
       <main className="flex-1 container mx-auto p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-8">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-lg font-semibold">How to Use</AccordionTrigger>
+                <AccordionContent>
+                  <div className="px-1 space-y-4 text-muted-foreground">
+                    <p className="flex items-start gap-4">
+                      <FileUp className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                      <span><strong>1. Upload Excel File:</strong> Click the upload area or drag and drop your .xlsx file. The app will read the first sheet.</span>
+                    </p>
+                    <p className="flex items-start gap-4">
+                      <Search className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                      <span><strong>2. Preview & Configure:</strong> A preview of your data will appear. Set your desired table name and choose if you want a single batch insert statement.</span>
+                    </p>
+                     <p className="flex items-start gap-4">
+                      <Code className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                      <span><strong>3. Generate SQL:</strong> Click the "Generate SQL" button to create the INSERT statements.</span>
+                    </p>
+                    <p className="flex items-start gap-4">
+                      <Copy className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                      <span><strong>4. Copy or Download:</strong> Your SQL code is ready! Copy it directly or download it as a .sql file.</span>
+                    </p>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          
           <Card className="shadow-md">
             <CardHeader>
               <CardTitle className="text-xl font-semibold flex items-center gap-3">
