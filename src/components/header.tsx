@@ -8,7 +8,7 @@ export function Header() {
         <Link href="/" className="flex items-center gap-3">
             <Database className="w-8 h-8 text-primary" />
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              SQL Sheet
+              SQL Sheet Converter
             </h1>
         </Link>
       </div>

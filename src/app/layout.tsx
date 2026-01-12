@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'SQL Sheet | Convert Excel to SQL',
+  title: 'SQL Sheet Converter',
   description: 'Easily convert your Excel spreadsheets into SQL INSERT statements. Upload a file, preview your data, and generate clean SQL code instantly.',
 };
 
