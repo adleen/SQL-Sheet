@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ArrowDown, Maximize } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type Row = Record<string, string | number | null | undefined>;
 
@@ -23,6 +24,7 @@ export default function Home() {
   const [tableName, setTableName] = useState('my_table');
   const [fileName, setFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isBatchInsert, setIsBatchInsert] = useState(false);
   const { toast } = useToast();
 
   const handleFileUpload = (file: File) => {
@@ -120,21 +122,32 @@ export default function Home() {
     }
 
     const columns = headers.map(h => `\`${h.trim()}\``).join(', ');
-    const insertStatements = data.map(row => {
-      const values = headers.map(header => {
-        const value = row[header];
+    const formatValue = (value: any) => {
         if (value === null || value === undefined || String(value).trim() === '') {
-          return 'NULL';
+            return 'NULL';
         }
         if (typeof value === 'string') {
-          return `'${value.replace(/'/g, "''")}'`;
+            return `'${value.replace(/'/g, "''")}'`;
         }
         return value;
-      }).join(', ');
-      return `INSERT INTO \`${tableName.trim()}\` (${columns}) VALUES (${values});`;
-    }).join('\n');
+    };
+    
+    let generatedSql = '';
 
-    setSql(insertStatements);
+    if (isBatchInsert) {
+        const valuesList = data.map(row => {
+            const rowValues = headers.map(header => formatValue(row[header])).join(', ');
+            return `(${rowValues})`;
+        }).join(',\n    ');
+        generatedSql = `INSERT INTO \`${tableName.trim()}\` (${columns}) VALUES\n    ${valuesList};`;
+    } else {
+        generatedSql = data.map(row => {
+            const values = headers.map(header => formatValue(row[header])).join(', ');
+            return `INSERT INTO \`${tableName.trim()}\` (${columns}) VALUES (${values});`;
+        }).join('\n');
+    }
+
+    setSql(generatedSql);
     toast({
         title: "SQL Generated!",
         description: "Your INSERT statements are ready below."
@@ -170,16 +183,27 @@ export default function Home() {
                   <CardDescription>Review your data, set the SQL table name, and generate the code.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid w-full max-w-sm items-center gap-1.5">
-                    <Label htmlFor="tableName" className="font-semibold">Table Name</Label>
-                    <Input
-                      id="tableName"
-                      type="text"
-                      value={tableName}
-                      onChange={(e) => setTableName(e.target.value)}
-                      placeholder="e.g., users"
-                    />
-                  </div>
+                    <div className="flex flex-col sm:flex-row gap-4 sm:items-end">
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="tableName" className="font-semibold">Table Name</Label>
+                            <Input
+                            id="tableName"
+                            type="text"
+                            value={tableName}
+                            onChange={(e) => setTableName(e.target.value)}
+                            placeholder="e.g., users"
+                            />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox id="batch-insert" checked={isBatchInsert} onCheckedChange={(checked) => setIsBatchInsert(checked as boolean)} />
+                            <label
+                                htmlFor="batch-insert"
+                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                                Batch Insert
+                            </label>
+                        </div>
+                    </div>
                   <div>
                     <div className="flex justify-between items-center mb-2">
                         <p className="text-sm font-medium">Data Preview:</p>
