@@ -281,7 +281,7 @@ export default function Home() {
       </main>
       <footer className="py-6 mt-8">
           <div className="container mx-auto text-center text-sm text-muted-foreground">
-              <p>&copy; {new Date().getFullYear()} SQL Sheet. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} SQL Sheet Converter by <a href="https://github.com/adleen" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">adleen</a>. All rights reserved.</p>
           </div>
       </footer>
     </div>
